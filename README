@@ -1,4 +1,8 @@
-#setup enviroment
+#Author: Dengfeng Zhang(dengfeng.zhang@cern.ch)
+
+###setup enviroment
+'''
 source setup.sh
+'''
 
 
