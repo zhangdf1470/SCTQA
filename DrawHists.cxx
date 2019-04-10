@@ -32,6 +32,20 @@ int DrawHists(string inFileName)
   TH1F* hdacthr_strip_top = (TH1F*) inFile->Get("hdacthr_strip_top") ;
   TH1F* hdacthr_strip_bottom = (TH1F*) inFile->Get("hdacthr_strip_bottom") ;
 
+  TH2F* h_noise_vs_gain_top = new TH2F("h_noise_vs_gain_top", "", 40, 30, 70, 30, 1000, 2500) ;
+  h_noise_vs_gain_top->GetXaxis()->SetTitle("Gain[mV/fC]") ;
+  h_noise_vs_gain_top->GetYaxis()->SetTitle("ENC[e]") ;
+  TH2F* h_noise_vs_gain_bottom = new TH2F("h_noise_vs_gain_bottom", "", 40, 30, 70, 30, 1000, 2500) ;
+  h_noise_vs_gain_bottom->GetXaxis()->SetTitle("Gain[mV/fC]") ;
+  h_noise_vs_gain_bottom->GetYaxis()->SetTitle("ENC[e]") ;
+  for(int i=1 ; i<=hnoise_strip_top->GetNbinsX() ; i++)
+  {
+    if(hgain_strip_top->GetBinContent(i)==0)
+      continue ;
+    h_noise_vs_gain_top->Fill(hgain_strip_top->GetBinContent(i), hnoise_strip_top->GetBinContent(i)) ;
+    h_noise_vs_gain_bottom->Fill(hgain_strip_bottom->GetBinContent(i), hnoise_strip_bottom->GetBinContent(i)) ;
+  }
+
   TCanvas* c = new TCanvas("c", "", 1200, 600) ;
   hnoise_strip_top->Draw() ;
   c->Print("Noise_Strip_Top.pdf") ;
@@ -62,7 +76,15 @@ int DrawHists(string inFileName)
   c->cd(4) ; 
   hgain_strip_bottom->Draw() ;
   c->Print("Noise_vs_Gain.pdf") ;
-  
+  delete c ;
+
+  gStyle->SetPadRightMargin(0.15);
+  c = new TCanvas("c", "", 800, 600) ;
+  h_noise_vs_gain_top->Draw("colz")  ;
+  c->Print("Noise_vs_Gain_2D_Top.pdf") ;
+  h_noise_vs_gain_bottom->Draw("colz")  ;
+  c->Print("Noise_vs_Gain_2D_Bottom.pdf") ;
+  delete c ;
 
   return 0 ;
 }
