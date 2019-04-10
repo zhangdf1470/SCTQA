@@ -65,18 +65,20 @@ void ThrScan::Initialize(){
     std::ostringstream ohhit;
     ohhit << "hhit_" << i;
     hhit[i] = new TH1F((ohhit.str()).c_str(), "", nstrip, -0.5, (double)nstrip - 0.5);
-    hhit[i]->SetXTitle("Strip number");
+    hhit[i]->SetXTitle("Strip Number");
 
     for(int j=0; j<nstrip; j++){
       std::ostringstream ohthr;
       ohthr << "hthr_" << i << "_" << j;
       hthr[i][j] = new TH1F((ohthr.str()).c_str(), "", ntag, -0.5, (double)ntag - 0.5);
-      hthr[i][j]->SetXTitle("Threshold DAC");
+      hthr[i][j]->SetXTitle("Threshold DAC[mV]");
+      hthr[i][j]->SetYTitle("Hits");
 
       std::ostringstream ohxtalk;
       ohxtalk << "hxtalk_" << i << "_" << j;
       hxtalk[i][j] = new TH1F((ohxtalk.str()).c_str(), "", ntag, -0.5, (double)ntag - 0.5);
-      hxtalk[i][j]->SetXTitle("Xtalkeshold DAC");
+      hxtalk[i][j]->SetXTitle("Xtalkeshold DAC[mV]");
+      hxtalk[i][j]->SetYTitle("Hits");
 
       std::ostringstream ofunc;
       ofunc << "func_" << i << "_" << j;
@@ -89,14 +91,10 @@ void ThrScan::Initialize(){
 
 void ThrScan::ReadTree(int runid, std::string &srun){
   std::ostringstream ofile;  
-  //ofile << "~/cernbox/data/" << sdir_module << "/feb-802932E1-";
   ofile << "feb-802932E1-";
   char runstring[32];
   sprintf(runstring, "%06d", runid);
   ofile << runstring;
-  //if(runid < 10) ofile << "00000" << runid;
-  //else if(runid < 100) ofile << "0000" << runid;
-  //else if(runid < 1000) ofile << "000" << runid;
 
   ofile << ".root";
   std::string sfile = ofile.str();
@@ -370,55 +368,46 @@ void ThrScan::PlotBadStrips(std::string srun){
   spng += srun;
   spng += "_bad.pdf";
   
-  TCanvas *c1 = new TCanvas("c1", "small cluster energy", 0, 0, 400, 400);
+  TCanvas *c = new TCanvas("c", "", 800, 600);
+  c->Print((spng+"[").c_str()) ;
   hbad->Draw();
-  c1->Print(spng.c_str());
+  c->Print(spng.c_str());
 
-  TCanvas *c2 = new TCanvas("c2", "small cluster energy", 0, 0, 900, 900);
-
-  std::string spdf = "run_";
-  spdf += srun;
-  std::string spdf0 = spdf;
-  std::string spdf1 = spdf;
-  std::string spdf2 = spdf;
-  spdf0 += "_bad.pdf[";
-  spdf1 += "_bad.pdf";
-  spdf2 += "_bad.pdf]";
-  c2->Divide(3,3);
-  int nn = 0;
-  c2->Print(spdf0.c_str());
   for(int i=0; i<nbad; i++){
     for(int j=0; j<nside; j++){
-      std::vector<int>::iterator it = vbad_strip[i][j].begin();
-      while(it != vbad_strip[i][j].end()){
-	if(nn != 0 && nn%9 == 0){
-	  c2->Update();
-	  c2->Print(spdf1.c_str());
-	  c2->Clear();
-	  c2->Divide(3,3);
-	}
-	c2->cd(nn%9 + 1);
-
-	std::ostringstream ohthr;
-	if(i==0) ohthr << "hthr_" << j << "_" << *it << "(Dead)";
-	else if(i==1) ohthr << "hthr_" << j << "_" << *it << "(Low eff)";
-	else if(i==2) ohthr << "hthr_" << j << "_" << *it << "(Noisy)";
-	else if(i==3) ohthr << "hthr_" << j << "_" << *it << "(Xtalk)";
-	hthr[j][*it]->SetTitle((ohthr.str()).c_str());
-	if(i < 3){
-	  hthr[j][*it]->Draw();
-	}else if(i == 3){
-	  hthr[j][*it]->Draw();
+      for(std::vector<int>::iterator it = vbad_strip[i][j].begin(); it!=vbad_strip[i][j].end(); it++)
+      {
+        std::string tag="";
+        if(i==0) tag="Dead Strip";
+        else if(i==1) tag="Low Effiency Strip)";
+        else if(i==2) tag="Noisy Strip";
+        else if(i==3) tag="Xtalk Strip";
+        if(i < 3){
+          hthr[j][*it]->Draw();
+        }else if(i == 3){
+          hthr[j][*it]->Draw();
 	  hxtalk[j][*it]->SetLineColor(kRed);
 	  hxtalk[j][*it]->Draw("same");
-	}
-	nn++;
-	it++;
+        }
+        TLatex latex;
+        latex.SetNDC() ;
+        latex.SetTextAlign(13);  //align at top
+        if(j==0)
+        {
+          latex.DrawLatex(0.2,0.9,TString::Format("Top Sensor, Strip: %i", (*it)+1));
+          latex.DrawLatex(0.2,0.85,tag.c_str());
+        }
+        else
+        {
+          latex.DrawLatex(0.2,0.9,TString::Format("Back Sensor, Strip: %i", (*it)+1));
+          latex.DrawLatex(0.2,0.85,tag.c_str());
+        }
+        c->Print(spng.c_str());
       }
     }//for(int j=0; j<nside; j++){
   }//for(int i=0; i<nbad; i++)
-  c2->Print(spdf1.c_str());
-  c2->Print(spdf2.c_str());
+  c->Print((spng+"]").c_str());
+  delete c;
 
   std::cout << std::endl;
   std::cout << "=== Bad strips ===============" << std::endl;
@@ -429,9 +418,6 @@ void ThrScan::PlotBadStrips(std::string srun){
   }
   std::cout << "==============================" << std::endl;
   std::cout << std::endl;
-
-  delete c1;
-  delete c2;
 }
 
 

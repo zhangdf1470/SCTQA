@@ -22,11 +22,11 @@ do
   GainRun2=${array[8]}
   GainRun3=${array[9]}
 
-  #if [[ ${ModuleID} != "20220040200538" ]]
-  ##if [[ ${ModuleID} != "20220170200413" ]]
-  #then
-  #  continue
-  #fi
+  if [[ ${ModuleID} != "20220040200538" ]]
+  #if [[ ${ModuleID} != "20220170200413" ]]
+  then
+    continue
+  fi
 
   if [ ! -d ${inPath}/${ModuleID}/ ]
   then

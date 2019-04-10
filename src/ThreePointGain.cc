@@ -372,7 +372,8 @@ void ThreePointGain::MakePlots(int runid[nrun_gain]){
         vbad_strip[a][n][i] = m_ThrScan->vbad_strip[n][i] ;
     }
 
-    if(a == 1) m_ThrScan->PlotBadStrips(srun[a]);
+    //if(a == 1) m_ThrScan->PlotBadStrips(srun[a]);
+    m_ThrScan->PlotBadStrips(srun[a]);
     delete m_ThrScan;
   }//for(int a=0; a<nrun_gain; a++)
 
