@@ -1,9 +1,16 @@
 #!/bin/bash
 
-FileName="FASER_SCTmodule_QA.txt"
-if [ ! -e ${FileName} ]
+if [ $# -eq 0 ]  || [ $# -gt 1 ]
 then
-  echo $FileName does not exist!!!!
+  echo No inFile is specfied or Too many options are specified!!!!!
+  return
+fi
+
+#FileName="FASER_SCTmodule_QA.txt"
+inFileName=$1
+if [ ! -e ${inFileName} ]
+then
+  echo $inFileName does not exist!!!!
   return 
 fi
 
@@ -80,4 +87,4 @@ do
   mv gain.log $outPath
   mv 3PointsMeasurement.root $outPath/3PointsMeasurement_${GainRun1}_${GainRun2}_${GainRun3}.root
 
-done < ${FileName}
+done < ${inFileName}

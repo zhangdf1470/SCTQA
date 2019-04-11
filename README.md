@@ -26,3 +26,8 @@ source setup.sh
 ```
   root -l -b -q 'DrawHists.cxx(inFileName)'
 ```
+
+### Sumarize the results
+```
+  root -l -b -q SummarizeQA.cxx
+```
