@@ -14,6 +14,19 @@ TH1F* bookTH1F(std::string name, std::string title,
   if(overflow) tmp->StatOverflows() ;
   return tmp ;
 }
+TH2F* bookTH2F(std::string name, std::string title,
+               std::string xlabel,std::string ylabel,
+               int xbins, double xlow, double xhigh,
+               int ybins, double ylow, double yhigh,
+               bool sumw2 = true, bool overflow=true)
+{
+  TH2F* tmp = new TH2F( name.c_str(), title.c_str(), xbins, xlow, xhigh, ybins, ylow, yhigh);
+  tmp->GetXaxis()->SetTitle(xlabel.c_str()) ;
+  tmp->GetYaxis()->SetTitle(ylabel.c_str()) ;
+  if(sumw2) tmp->Sumw2() ;
+  if(overflow) tmp->StatOverflows() ;
+  return tmp ;
+}
 
 int makePlot(TH1F* h, string name, string drawoption, float xLabel, float yLabel, string text,  float xText, float yText, int textColor)
 {
@@ -21,6 +34,18 @@ int makePlot(TH1F* h, string name, string drawoption, float xLabel, float yLabel
   h->Draw(drawoption.c_str()) ;
   FASERLabel(xLabel, yLabel,"Internal", 1);
   myText(xText, yText, textColor, text.c_str()) ;
+  name += ".pdf" ;
+  c->Print(name.c_str()) ;
+  delete c;
+  return 0 ;
+}
+
+int makeLongerPlot(TH1F* h, string name, string drawoption)
+{
+  TCanvas* c = new TCanvas("c", "", 1200, 600) ;
+  h->Draw(drawoption.c_str()) ;
+  //FASERLabel(xLabel, yLabel,"Internal", 1);
+  //myText(xText, yText, textColor, text.c_str()) ;
   name += ".pdf" ;
   c->Print(name.c_str()) ;
   delete c;
