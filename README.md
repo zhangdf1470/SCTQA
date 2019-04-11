@@ -5,6 +5,13 @@
 source setup.sh
 ```
 
+### Compile ./src/
+```
+  1. navigate to ./src/
+  2. make
+  3. cd ../
+```
+
 ### FASER_SCTmodule_QA.txt contains Module IDs and their measurement results(leakage current, gain, noise, bad strips).
 
 ### Read FASER_SCTmodule_QA.txt to a Root file for analysis:
