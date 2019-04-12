@@ -29,11 +29,11 @@ do
   GainRun2=${array[8]}
   GainRun3=${array[9]}
 
-  if [[ ${ModuleID} != "20220040200538" ]]
-  #if [[ ${ModuleID} != "20220170200413" ]]
-  then
-    continue
-  fi
+  #if [[ ${ModuleID} != "20220040200538" ]]
+  #if [[ ${ModuleID} != "20220380200220" ]]
+  #then
+  #  continue
+  #fi
 
   if [ ! -d ${inPath}/${ModuleID}/ ]
   then
@@ -68,7 +68,6 @@ do
 
   ./src/ana ${GainRun1} ${GainRun2} ${GainRun3}  | grep -v "Info" > gain.log 2>&1
 
-  root -l -b -q 'DrawHists.cxx("3PointsMeasurement.root")'
 
   rm ${FileGainRun1}
   rm ${FileGainRun2}
@@ -82,9 +81,14 @@ do
   fi
   echo outPath: $outPath
 
-  
+  MeasurementFile=$outPath/3PointsMeasurement_${GainRun1}_${GainRun2}_${GainRun3}.root
+
   mv *.pdf $outPath
   mv gain.log $outPath
-  mv 3PointsMeasurement.root $outPath/3PointsMeasurement_${GainRun1}_${GainRun2}_${GainRun3}.root
+  mv 3PointsMeasurement.root $MeasurementFile
+  
+  root -l -b -q 'DrawHists.cxx("'${MeasurementFile}'")'
+
+  mv *.pdf $outPath
 
 done < ${inFileName}

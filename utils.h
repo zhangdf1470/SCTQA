@@ -51,3 +51,26 @@ int makeLongerPlot(TH1F* h, string name, string drawoption)
   delete c;
   return 0 ;
 }
+
+int draw3LongHists(string name, TH1F* h1, TH1F* h2, TH1F* h3, string drawoptions[3], string header, string legendentries[3])
+{
+  TCanvas* c = new TCanvas("c", "", 1200, 600) ;
+  h1->Draw(drawoptions[0].c_str()) ;
+  h2->Draw((drawoptions[1]+"same").c_str()) ;
+  h3->Draw((drawoptions[2]+"same").c_str()) ;
+  TLegend* legend = new TLegend(0.2, 0.8, 0.8, 0.9);
+  legend->SetHeader(header.c_str(), "c") ;
+  //legend->SetBorderSize(0) ;
+  legend->SetFillStyle(4000);
+  legend->SetShadowColor(0) ;
+  legend->SetNColumns(3);
+  legend->AddEntry(h1, legendentries[0].c_str(), "p") ;
+  legend->AddEntry(h2, legendentries[1].c_str(), "p") ;
+  legend->AddEntry(h3, legendentries[2].c_str(), "p") ;
+  legend->Draw() ;
+  name += ".pdf" ;
+  c->Print(name.c_str()) ;
+  delete legend ;
+  delete c;
+  return 0 ;
+}
