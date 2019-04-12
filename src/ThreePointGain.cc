@@ -387,18 +387,18 @@ void ThreePointGain::MakePlots(int runid[nrun_gain]){
     (*TopNLowEffStrips)[irun] = vbad_strip[irun][1][0].size() ;
     (*TopNNoisyStrips)[irun] = vbad_strip[irun][2][0].size() ;
     (*TopNXtalkStrips)[irun] = vbad_strip[irun][3][0].size() ;
-    (*BottomNDeadStrips)[irun] = vbad_strip[irun][0][0].size() ;
-    (*BottomNLowEffStrips)[irun] = vbad_strip[irun][1][0].size() ;
-    (*BottomNNoisyStrips)[irun] = vbad_strip[irun][2][0].size() ;
-    (*BottomNXtalkStrips)[irun] = vbad_strip[irun][3][0].size() ;
+    (*BottomNDeadStrips)[irun] = vbad_strip[irun][0][1].size() ;
+    (*BottomNLowEffStrips)[irun] = vbad_strip[irun][1][1].size() ;
+    (*BottomNNoisyStrips)[irun] = vbad_strip[irun][2][1].size() ;
+    (*BottomNXtalkStrips)[irun] = vbad_strip[irun][3][1].size() ;
     TopDeadStripIDs[irun]->ResizeTo(vbad_strip[irun][0][0].size()) ;
     TopLowEffStripIDs[irun]->ResizeTo(vbad_strip[irun][1][0].size()) ;
     TopNoisyStripIDs[irun]->ResizeTo(vbad_strip[irun][2][0].size()) ;
     TopXtalkStripIDs[irun]->ResizeTo(vbad_strip[irun][3][0].size()) ;
-    BottomDeadStripIDs[irun]->ResizeTo(vbad_strip[irun][0][0].size()) ;
-    BottomLowEffStripIDs[irun]->ResizeTo(vbad_strip[irun][1][0].size()) ;
-    BottomNoisyStripIDs[irun]->ResizeTo(vbad_strip[irun][2][0].size()) ;
-    BottomXtalkStripIDs[irun]->ResizeTo(vbad_strip[irun][3][0].size()) ;
+    BottomDeadStripIDs[irun]->ResizeTo(vbad_strip[irun][0][1].size()) ;
+    BottomLowEffStripIDs[irun]->ResizeTo(vbad_strip[irun][1][1].size()) ;
+    BottomNoisyStripIDs[irun]->ResizeTo(vbad_strip[irun][2][1].size()) ;
+    BottomXtalkStripIDs[irun]->ResizeTo(vbad_strip[irun][3][1].size()) ;
     for(int isize = 0; isize<vbad_strip[irun][0][0].size() ; isize++)
       (*TopDeadStripIDs[irun])[isize] = vbad_strip[irun][0][0].at(isize)+1 ;
     for(int isize = 0; isize<vbad_strip[irun][1][0].size() ; isize++)
