@@ -36,11 +36,19 @@ int SummarizeQA()
   int ThresholdRunNumber1 = 0 ;
   int ThresholdRunNumber2 = 0 ;
   int ThresholdRunNumber3 = 0 ;
+  int NDead = 0 ;
+  int NLoweff = 0 ;
+  int NNoisy = 0 ;
+  int NXtalk = 0 ;
 
   tree->SetBranchAddress("ModuleID", &ModuleID) ;
   tree->SetBranchAddress("ThresholdRunNumber1", &ThresholdRunNumber1) ;
   tree->SetBranchAddress("ThresholdRunNumber2", &ThresholdRunNumber2) ;
   tree->SetBranchAddress("ThresholdRunNumber3", &ThresholdRunNumber3) ;
+  tree->SetBranchAddress("NDead", &NDead) ;
+  tree->SetBranchAddress("NLoweff", &NLoweff) ;
+  tree->SetBranchAddress("NNoisy", &NNoisy) ;
+  tree->SetBranchAddress("NXtalk", &NXtalk) ;
   
   int nEntries=tree->GetEntries();
   float noise[nEntries] ;
@@ -53,6 +61,7 @@ int SummarizeQA()
   int ngainrun = 3 ;
 
   vector< vector <int> > nbadstrips ;
+  int nbadstrip_arrary[nEntries] ;
 
   vector< vector <int> > topndeadstrips ;
   vector< vector <int> > topdeadstripsIDs ;
@@ -98,7 +107,7 @@ int SummarizeQA()
   for(int ientry=0 ; ientry<tree->GetEntries(); ientry++)
   {
     tree->GetEntry(ientry) ;
-    cout<<std::to_string(ModuleID)<<":"<<ThresholdRunNumber1<<","<<ThresholdRunNumber3<<","<<ThresholdRunNumber3<<endl ;
+    nbadstrip_arrary[ientry] = NDead+NLoweff+NNoisy+NXtalk ;
     inPath = baseinPath+"/outPut/"+to_string(ModuleID)+"/" ;
     TString inFileName = "3PointsMeasurement_"+std::to_string(ThresholdRunNumber1)+"_"+std::to_string(ThresholdRunNumber2)+"_"+std::to_string(ThresholdRunNumber3)+".root" ;
     if(gSystem->AccessPathName(inPath+inFileName))
@@ -118,25 +127,6 @@ int SummarizeQA()
     TVectorF* BottomNLowEffStrip = (TVectorF*) inMeasurementFile->Get("BottomNLowEffStrip") ;
     TVectorF* BottomNNosiyStrip = (TVectorF*) inMeasurementFile->Get("BottomNNosiyStrip") ;
     TVectorF* BottomNXtalkStrip = (TVectorF*) inMeasurementFile->Get("BottomNXtalkStrip") ;
-    /*
-    TVectorF* TopDeadStripIDs[ngainrun] ;
-    TVectorF* TopXtalkStripIDs = (TVectorF*) inMeasurementFile->Get("TopXtalkStripIDs") ;
-    TVectorF* TopLowEffStripIDs = (TVectorF*) inMeasurementFile->Get("TopLowEffStripIDs") ;
-    TVectorF* TopNosiyStripIDs = (TVectorF*) inMeasurementFile->Get("TopNoisyStripIDs") ;
-
-    TVectorF* BottomDeadStripIDs = (TVectorF*) inMeasurementFile->Get("BottomDeadStripIDs") ;
-    TVectorF* BottomLowEffStripIDs = (TVectorF*) inMeasurementFile->Get("BottomLowEffStripIDs") ;
-    TVectorF* BottomNosiyStripIDs = (TVectorF*) inMeasurementFile->Get("BottomNosiyStripIDs") ;
-    TVectorF* BottomXtalkStripIDs = (TVectorF*) inMeasurementFile->Get("BottomXtalkStripIDs") ;
-    for(int irun=0 ; irun<ngainrun ; irun++)
-    {
-      TopDeadStripIDs[irun] = (TVectorF*) inMeasurementFile->Get(TString::Format("TopDeadStripIDs%d", irun+1)) ;
-      for(int iElement = 0 ; iElement<TopDeadStripIDs[irun]->GetNoElements() ; iElement++)
-      {
-        topdeadstripsIDs.at(irun).push_back((*TopDeadStripIDs[irun])[iElement]) ;
-      }
-    }
-    */
     for(int irun=0 ; irun<ngainrun ; irun++)
     {
       nbadstrips.at(irun).push_back((*NBadStrips)[irun]) ;
@@ -174,9 +164,18 @@ int SummarizeQA()
     delete inMeasurementFile ;
   }
   // end loop over tree
-  delete tree ;
-  delete inFile ;
+  //delete tree ;
+  //delete inFile ;
 
+  for(int iEntry=0 ; iEntry<nEntries ; iEntry++)
+  {
+    if(nbadstrip_arrary[iEntry]!=nbadstrips.at(1).at(iEntry))
+    {
+      tree->GetEntry(iEntry) ;
+      cout<<ModuleID<<endl ;
+      cout<<nbadstrip_arrary[iEntry]<<":"<<nbadstrips.at(1).at(iEntry)<<endl ;
+    }
+  }
   // specify outPath and outFile 
   TString outPath = baseinPath+"/outPut/SummaryQA/" ;
   if(gSystem->AccessPathName(outPath))
@@ -193,6 +192,8 @@ int SummarizeQA()
   TH1F* h_gain_top = bookTH1F("h_gain_top", "", "Gain(mV/fC)", "Modules", 25, 35, 60) ;
   TH1F* h_gain_bottom = bookTH1F("h_gain_bottom", "", "Gain(mV/fC)", "Modules", 25, 35, 60) ;
   // histograms of bad strips
+  TH1F* h_badstrip = bookTH1F("h_badstrip", "Bad Strips in Noisy strips from Gain Run1, xtalk strip from Run3, low eff and dead strip from run2", "Bad Strips", "Modules", 15, 0, 15) ;
+
   TH1F* h_badstrip_gainrun1 = bookTH1F("h_badstrip_gainrun1", "Bad Strips in Gain Run1", "Bad Strips", "Modules", 15, 0, 15) ;
   TH1F* h_badstrip_gainrun2 = bookTH1F("h_badstrip_gainrun2", "Bad Strips in Gain Run2", "Bad Strips", "Modules", 15, 0, 15) ;
   TH1F* h_badstrip_gainrun3 = bookTH1F("h_badstrip_gainrun3", "Bad Strips in Gain Run3", "Bad Strips", "Modules", 15, 0, 15) ;
@@ -235,6 +236,7 @@ int SummarizeQA()
     {
       if(ibin==15)
       {
+        h_badstrip->GetXaxis()->SetBinLabel(ibin, TString::Format("#geq%d", 15-1));
         h_badstrip_vect.at(irun)->GetXaxis()->SetBinLabel(ibin, TString::Format("#geq%d", 15-1));
         h_deadstrip_vect.at(irun)->GetXaxis()->SetBinLabel(ibin, TString::Format("#geq%d", 15-1));
         h_loweffstrip_vect.at(irun)->GetXaxis()->SetBinLabel(ibin, TString::Format("#geq%d", 15-1));
@@ -243,6 +245,7 @@ int SummarizeQA()
       }
       else
       {
+        h_badstrip->GetXaxis()->SetBinLabel(ibin, TString::Format("%d", ibin-1));
         h_badstrip_vect.at(irun)->GetXaxis()->SetBinLabel(ibin, TString::Format("%d", ibin-1));
         h_deadstrip_vect.at(irun)->GetXaxis()->SetBinLabel(ibin, TString::Format("%d", ibin-1));
         h_loweffstrip_vect.at(irun)->GetXaxis()->SetBinLabel(ibin, TString::Format("%d", ibin-1));
@@ -268,10 +271,12 @@ int SummarizeQA()
       h_noisystrip_vect.at(irun)->Fill(topnnoisystrips.at(irun).at(ientry)+bottomnnoisystrips.at(irun).at(ientry)) ;
       h_xtalkstrip_vect.at(irun)->Fill(topnxtalkstrips.at(irun).at(ientry)+bottomnxtalkstrips.at(irun).at(ientry)) ;
     }
+    h_badstrip->Fill(topndeadstrips.at(1).at(ientry)+bottomndeadstrips.at(1).at(ientry)+topnloweffstrips.at(1).at(ientry)+bottomnloweffstrips.at(1).at(ientry)+topnnoisystrips.at(0).at(ientry)+bottomnnoisystrips.at(0).at(ientry)+topnxtalkstrips.at(2).at(ientry)+bottomnxtalkstrips.at(2).at(ientry)) ;
   }
   h_badstrip_gainrun1->SetBinContent(h_badstrip_gainrun1->GetNbinsX(), h_badstrip_gainrun1->GetBinContent(h_badstrip_gainrun1->GetNbinsX())+h_badstrip_gainrun1->GetBinContent(h_badstrip_gainrun1->GetNbinsX()+1)) ;
   h_badstrip_gainrun2->SetBinContent(h_badstrip_gainrun2->GetNbinsX(), h_badstrip_gainrun2->GetBinContent(h_badstrip_gainrun2->GetNbinsX())+h_badstrip_gainrun2->GetBinContent(h_badstrip_gainrun2->GetNbinsX()+1)) ;
   h_badstrip_gainrun3->SetBinContent(h_badstrip_gainrun3->GetNbinsX(), h_badstrip_gainrun3->GetBinContent(h_badstrip_gainrun3->GetNbinsX())+h_badstrip_gainrun3->GetBinContent(h_badstrip_gainrun3->GetNbinsX()+1)) ;
+  h_badstrip->SetBinContent(h_badstrip->GetNbinsX(), h_badstrip->GetBinContent(h_badstrip->GetNbinsX())+h_badstrip->GetBinContent(h_badstrip->GetNbinsX()+1)) ;
 
   h_noise->GetYaxis()->SetRangeUser(0, h_noise->GetMaximum()*1.2) ;
   h_noise_top->GetYaxis()->SetRangeUser(0, h_noise_top->GetMaximum()*1.2) ;
@@ -293,6 +298,7 @@ int SummarizeQA()
     makePlot(h_noisystrip_vect.at(irun), (string)TString::Format(outPath+"NoisyStrips_GainRun%d",irun+1), "Hist", 0.6, 0.85, "", 0.7, 0.75, 1) ;
     makePlot(h_xtalkstrip_vect.at(irun), (string)TString::Format(outPath+"XtalkStrips_GainRun%d",irun+1), "Hist", 0.6, 0.85, "", 0.7, 0.75, 1) ;
   }
+  makePlot(h_badstrip, (string)outPath+"BadStrips", "Hist", 0.6, 0.85, "", 0.7, 0.75, 1) ;
   outFile->Write() ;
   outFile->Close() ;
   delete outFile ;
