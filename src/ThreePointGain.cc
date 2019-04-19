@@ -90,92 +90,60 @@ void ThreePointGain::Initialize(){
     BottomLowEffStripIDs[irun] = new TVectorF(nstrip) ;
   }
   // new histograms of nosie
-  hnoise = new TH1F("hnoise", "Nosie of the Module", 100, 0., 3500.);
+  hnoise = bookTH1F("hnoise", "Nosie of the Module", "ENC[e]", "Strips", 100, 0., 3500.);
+  hnoise_top = bookTH1F("hnoise_top", "Nosie of the Top Sensor", "ENC[e]", "Strips", 100, 0., 3500.);
+  hnoise_bottom = bookTH1F("hnoise_bottom", "Nosie of the Back Sensor", "ENC[e]", "Strips", 100, 0., 3500.);
+  hnoise_strip = bookTH1F("hnoise_strip", "Nosie of each strip", "Strip ID", "ENC[e]", 2*nstrip , 0.5, 2*nstrip+0.5);
+  hnoise_strip_top = bookTH1F("hnoise_strip_top", "Nosie of each strip of the Top Sensor", "Top Strip ID", "ENC[e]", nstrip , 0.5, nstrip+0.5);
+  hnoise_strip_bottom = bookTH1F("hnoise_strip_bottom", "Nosie of each strip of the Back Sensor", "Back Strip ID", "ENC[e]", nstrip , 0.5, nstrip+0.5);
   hnoise->SetDirectory(outFile) ;
-  hnoise->SetXTitle("ENC[e]");
-  hnoise->SetYTitle("Strips");
-  hnoise_top = new TH1F("hnoise_top", "Nosie of the Top Sensor", 100, 0., 3500.);
   hnoise_top->SetDirectory(outFile) ;
-  hnoise_top->SetXTitle("ENC[e]");
-  hnoise_top->SetYTitle("Strips");
-  hnoise_bottom = new TH1F("hnoise_bottom", "Nosie of the Back Sensor", 100, 0., 3500.);
   hnoise_bottom->SetDirectory(outFile) ;
-  hnoise_bottom->SetXTitle("ENC[e]");
-  hnoise_bottom->SetYTitle("Strips");
-  hnoise_strip_top = new TH1F("hnoise_strip_top", "Nosie of each strip of the Top Sensor", nstrip , 0.5, nstrip+0.5);
+  hnoise_strip->SetDirectory(outFile) ;
   hnoise_strip_top->SetDirectory(outFile) ;
-  hnoise_strip_top->SetYTitle("ENC[e]");
-  hnoise_strip_top->SetXTitle("Top Strip ID");
-  hnoise_strip_bottom = new TH1F("hnoise_strip_bottom", "Nosie of each strip of the Back Sensor", nstrip , 0.5, nstrip+0.5);
   hnoise_strip_bottom->SetDirectory(outFile) ;
-  hnoise_strip_bottom->SetYTitle("ENC[e]");
-  hnoise_strip_bottom->SetXTitle("Back Strip ID");
 
   // new histograms of gain
-  hgain = new TH1F("hgain", "Gain", 100, 0., 100.);
+  hgain = bookTH1F("hgain", "Gain", "Gain[mV/fC]", "Strips", 100, 0., 100.);
+  hgain_top = bookTH1F("hgain_top", "Gain of Top Sensor", "Top Gain[mV/fC]", "Strips", 100, 0., 100.);
+  hgain_bottom = bookTH1F("hgain_bottom", "Gain of Back Sensor", "Back Gain[mV/fC]", "Strips", 100, 0., 100.);
+  hgain_strip = bookTH1F("hgain_strip", "Gain of each strip", "Strip ID", "Gain[mV/fC]", 2*nstrip , 0.5, 2*nstrip+0.5);
+  hgain_strip_top = bookTH1F("hgain_strip_top", "Gain of each strip of Top Sensor", "Top Strip ID", "Gain[mV/fC]", nstrip , 0.5, nstrip+0.5);
+  hgain_strip_bottom = bookTH1F("hgain_strip_bottom", "Gain of each strip of Back Sensor", "Back Strip ID", "Gain[mV/fC]", nstrip , 0.5, nstrip+0.5);
   hgain->SetDirectory(outFile) ;
-  hgain->SetXTitle("Gain[mV/fC]");
-  hgain->SetYTitle("Strips");
-  hgain_top = new TH1F("hgain_top", "Gain of Top Sensor", 100, 0., 100.);
   hgain_top->SetDirectory(outFile) ;
-  hgain_top->SetXTitle("Top Gain[mV/fC]");
-  hgain_top->SetYTitle("Strips");
-  hgain_bottom = new TH1F("hgain_bottom", "Gain of Back Sensor", 100, 0., 100.);
   hgain_bottom->SetDirectory(outFile) ;
-  hgain_bottom->SetXTitle("Back Gain[mV/fC]");
-  hgain_bottom->SetYTitle("Strips");
-  hgain_strip_top = new TH1F("hgain_strip_top", "Gain of each strip of Top Sensor", nstrip , 0.5, nstrip+0.5);
+  hgain_strip->SetDirectory(outFile) ;
   hgain_strip_top->SetDirectory(outFile) ;
-  hgain_strip_top->SetXTitle("Top Strip ID");
-  hgain_strip_top->SetYTitle("Gain[mV/fC]");
-  hgain_strip_bottom = new TH1F("hgain_strip_bottom", "Gain of each strip of Back Sensor", nstrip , 0.5, nstrip+0.5);
   hgain_strip_bottom->SetDirectory(outFile) ;
-  hgain_strip_bottom->SetXTitle("Back Strip ID");
-  hgain_strip_bottom->SetYTitle("Gain[mV/fC]");
 
   // new histograms of offset
-  hoffset = new TH1F("hoffset", "Offset of the Module", 100, 0., 200.);
+  hoffset = bookTH1F("hoffset", "Offset of the Module", "Offset[mV]", "Strips", 100, 0., 200.);
+  hoffset_top = bookTH1F("hoffset_top", "Offset of the Top Sensor", "Offset[mV]", "Strips", 100, 0., 200.);
+  hoffset_bottom = bookTH1F("hoffset_bottom", "Offset of the Back Sensor", "Offset[mV]", "Strips", 100, 0., 200.);
+  hoffset_strip = bookTH1F("hoffset_strip", "Offset of each strip", "Strip ID", "Offset[mV]", 2*nstrip , 0.5, 2*nstrip+0.5);
+  hoffset_strip_top = bookTH1F("hoffset_strip_top", "Offset of each strip of the Top Sensor", "Top Strip ID", "Offset[mV]", nstrip , 0.5, nstrip+0.5);
+  hoffset_strip_bottom = bookTH1F("hoffset_strip_bottom", "Offset of each strip of the Back Sensor", "Back Strip ID", "Offset[mV]", nstrip , 0.5, nstrip+0.5);
   hoffset->SetDirectory(outFile) ;
-  hoffset->SetXTitle("Offset[mV]");
-  hoffset->SetYTitle("Strips");
-  hoffset_top = new TH1F("hoffset_top", "Offset of the Top Sensor", 100, 0., 200.);
   hoffset_top->SetDirectory(outFile) ;
-  hoffset_top->SetXTitle("Offset[mV]");
-  hoffset_top->SetYTitle("Strips");
-  hoffset_bottom = new TH1F("hoffset_bottom", "Offset of the Back Sensor", 100, 0., 200.);
   hoffset_bottom->SetDirectory(outFile) ;
-  hoffset_bottom->SetXTitle("Offset[mV]");
-  hoffset_bottom->SetYTitle("Strips");
-  hoffset_strip_top = new TH1F("hoffset_strip_top", "Offset of each strip of the Top Sensor", nstrip , 0.5, nstrip+0.5);
+  hoffset_strip->SetDirectory(outFile) ;
   hoffset_strip_top->SetDirectory(outFile) ;
-  hoffset_strip_top->SetYTitle("Offset[mV]");
-  hoffset_strip_top->SetXTitle("Top Strip ID");
-  hoffset_strip_bottom = new TH1F("hoffset_strip_bottom", "Offset of each strip of the Back Sensor", nstrip , 0.5, nstrip+0.5);
   hoffset_strip_bottom->SetDirectory(outFile) ;
-  hoffset_strip_bottom->SetYTitle("Offset[mV]");
-  hoffset_strip_bottom->SetXTitle("Back Strip ID");
 
   // new histograms of DAC Threshold for 1 fC
-  hdacthr = new TH1F("hdacthr", "DAC Threshold for 1 fC of the Module", 100, 0., 200.);
+  hdacthr = bookTH1F("hdacthr", "DAC Threshold for 1 fC of the Module", "1 fC Threshold[mV]", "Strips", 100, 0., 200.);
+  hdacthr_top = bookTH1F("hdacthr_top", "DAC Threshold for 1 fC of the Top Sensor", "1 fC Threshold[mV]", "Strips", 100, 0., 200.);
+  hdacthr_bottom = bookTH1F("hdacthr_bottom", "DAC Threshold for 1 fC of the Back Sensor", "1 fC Threshold[mV]", "Strips", 100, 0., 200.);
+  hdacthr_strip = bookTH1F("hdacthr_strip", "DAC Threshold for 1 fC of each strip", "Strip ID", "1 fC Threshold[mV]", 2*nstrip, 0.5, 2*nstrip+0.5);
+  hdacthr_strip_top = bookTH1F("hdacthr_strip_top", "DAC Threshold for 1 fC of each strip of the Top Sensor", "Top Strip ID", "1 fC Threshold[mV]", nstrip, 0.5, nstrip+0.5);
+  hdacthr_strip_bottom = bookTH1F("hdacthr_strip_bottom", "DAC Threshold for 1 fC of of each strip of the Back Sensor", "Back Strip ID", "1 fC Threshold[mV]", nstrip, 0.5, nstrip+0.5);
   hdacthr->SetDirectory(outFile) ;
-  hdacthr->SetXTitle("1 fC Threshold[mV]");
-  hdacthr->SetYTitle("Strips");
-  hdacthr_top = new TH1F("hdacthr_top", "DAC Threshold for 1 fC of the Top Sensor", 100, 0., 200.);
   hdacthr_top->SetDirectory(outFile) ;
-  hdacthr_top->SetXTitle("1 fC Threshold[mV]");
-  hdacthr_top->SetYTitle("Strips");
-  hdacthr_bottom = new TH1F("hdacthr_bottom", "DAC Threshold for 1 fC of the Back Sensor", 100, 0., 200.);
   hdacthr_bottom->SetDirectory(outFile) ;
-  hdacthr_bottom->SetXTitle("1 fC Threshold[mV]");
-  hdacthr_bottom->SetYTitle("Strips");
-  hdacthr_strip_top = new TH1F("hdacthr_strip_top", "DAC Threshold for 1 fC of each strip of the Top Sensor", nstrip, 0.5, nstrip+0.5);
+  hdacthr_strip->SetDirectory(outFile) ;
   hdacthr_strip_top->SetDirectory(outFile) ;
-  hdacthr_strip_top->SetYTitle("1 fC Threshold[mV]");
-  hdacthr_strip_top->SetXTitle("Top Strip ID");
-  hdacthr_strip_bottom = new TH1F("hdacthr_strip_bottom", "DAC Threshold for 1 fC of of each strip of the Back Sensor", nstrip, 0.5, nstrip+0.5);
   hdacthr_strip_bottom->SetDirectory(outFile) ;
-  hdacthr_strip_bottom->SetYTitle("1 fC Threshold[mV]");
-  hdacthr_strip_bottom->SetXTitle("Back Strip ID");
 
   for(int i=0; i<nside; i++){
     for(int j=0; j<nstrip; j++){
@@ -203,20 +171,22 @@ void ThreePointGain::PlotSummary(std::string srun[]){
   hoffset->SetStats(1);
   hnoise->SetStats(1);
 
-  //hgain->SetMaximum(hgain->GetMaximum() * 1.2);
   hgain_top->SetMaximum(hgain_top->GetMaximum() * 1.2);
   hgain_bottom->SetMaximum(hgain_bottom->GetMaximum() * 1.2);
+
+  hgain_strip->GetYaxis()->SetRangeUser(20, 70);
   hgain_strip_top->GetYaxis()->SetRangeUser(20, 70);
   hgain_strip_bottom->GetYaxis()->SetRangeUser(20, 70);
 
-  //hoffset->SetMaximum(hoffset->GetMaximum() * 1.2);
+  hoffset_strip->GetYaxis()->SetRangeUser(-20, 100);
   hoffset_strip_top->GetYaxis()->SetRangeUser(-20, 100);
   hoffset_strip_bottom->GetYaxis()->SetRangeUser(-20, 100);
 
-  //hnoise->SetMaximum(hnoise->GetMaximum() * 1.2);
+  hnoise_strip->GetYaxis()->SetRangeUser(1000, 2500);
   hnoise_strip_top->GetYaxis()->SetRangeUser(1000, 2500);
   hnoise_strip_bottom->GetYaxis()->SetRangeUser(1000, 2500);
 
+  hdacthr_strip->GetYaxis()->SetRangeUser(50, 150);
   hdacthr_strip_top->GetYaxis()->SetRangeUser(50, 150);
   hdacthr_strip_bottom->GetYaxis()->SetRangeUser(50, 150);
 
@@ -239,6 +209,8 @@ void ThreePointGain::PlotSummary(std::string srun[]){
   c1->Print(spng.c_str());
   hgain_strip_bottom->Draw();
   c1->Print(spng.c_str());
+  hgain_strip->Draw();
+  c1->Print(spng.c_str());
 
   hoffset->Draw();
   c1->Print(spng.c_str());
@@ -249,6 +221,8 @@ void ThreePointGain::PlotSummary(std::string srun[]){
   hoffset_strip_top->Draw();
   c1->Print(spng.c_str());
   hoffset_strip_bottom->Draw();
+  c1->Print(spng.c_str());
+  hoffset_strip->Draw();
   c1->Print(spng.c_str());
 
   hnoise->Draw();
@@ -261,6 +235,8 @@ void ThreePointGain::PlotSummary(std::string srun[]){
   c1->Print(spng.c_str());
   hnoise_strip_bottom->Draw();
   c1->Print(spng.c_str());
+  hnoise_strip->Draw();
+  c1->Print(spng.c_str());
 
   hdacthr->Draw();
   c1->Print(spng.c_str());
@@ -271,6 +247,8 @@ void ThreePointGain::PlotSummary(std::string srun[]){
   hdacthr_strip_top->Draw();
   c1->Print(spng.c_str());
   hdacthr_strip_bottom->Draw();
+  c1->Print(spng.c_str());
+  hdacthr_strip->Draw();
   c1->Print(spng.c_str());
 
   c1->Print((spng+"]").c_str());
@@ -338,11 +316,7 @@ void ThreePointGain::PlotStripGain(std::string srun[nrun_gain]){
 }
 
 void ThreePointGain::MakePlots(int runid[nrun_gain]){
-
-  //gStyle->SetOptStat(0);
-  //gStyle->SetOptFit(0);
-  gStyle->SetPalette(1);
-
+  //gStyle->SetPalette(1);
   Double_t charge[nrun_gain] = {1.5, 2.0, 2.5}; //fC
   Double_t chargee[nrun_gain] = {0., 0., 0.}; //fC
   Double_t vt50[nside][nstrip][nrun_gain];
@@ -378,7 +352,9 @@ void ThreePointGain::MakePlots(int runid[nrun_gain]){
   }//for(int a=0; a<nrun_gain; a++)
 
 
+  std::cout<<1<<std::endl ;
   Initialize();
+  std::cout<<2<<std::endl ;
 
   for(int irun=0 ; irun<nrun_gain ; irun++)
   {
@@ -462,9 +438,13 @@ void ThreePointGain::MakePlots(int runid[nrun_gain]){
         hnoise_top->Fill(noise);
         hoffset_top->Fill(offset);
         hdacthr_top->Fill(thr_dac[i][j]) ;
+        hgain_strip->SetBinContent(j+1, gain) ;
         hgain_strip_top->SetBinContent(j+1, gain) ;
+        hnoise_strip->SetBinContent(j+1, noise) ;
         hnoise_strip_top->SetBinContent(j+1, noise) ;
+        hoffset_strip->SetBinContent(j+1, offset) ;
         hoffset_strip_top->SetBinContent(j+1, offset) ;
+        hdacthr_strip->SetBinContent(j+1, thr_dac[0][j]) ;
         hdacthr_strip_top->SetBinContent(j+1, thr_dac[0][j]) ;
       }
       else
@@ -473,9 +453,13 @@ void ThreePointGain::MakePlots(int runid[nrun_gain]){
         hnoise_bottom->Fill(noise);
         hoffset_bottom->Fill(offset);
         hdacthr_bottom->Fill(thr_dac[i][j]) ;
+        hgain_strip->SetBinContent(nstrip+j+1, gain) ;
         hgain_strip_bottom->SetBinContent(j+1, gain) ;
+        hnoise_strip->SetBinContent(nstrip+j+1, noise) ;
         hnoise_strip_bottom->SetBinContent(j+1, noise) ;
+        hoffset_strip->SetBinContent(nstrip+j+1, offset) ;
         hoffset_strip_bottom->SetBinContent(j+1, offset) ;
+        hdacthr_strip->SetBinContent(nstrip+j+1, thr_dac[1][j]) ;
         hdacthr_strip_bottom->SetBinContent(j+1, thr_dac[1][j]) ;
       }
 
