@@ -194,12 +194,16 @@ int DrawHists(string inFileName)
 
 
   // get histograms of gain, noise, offset, dac threashold for 1 fC
+  TH1F* hnoise_strip = (TH1F*) inFile->Get("hnoise_strip") ;
   TH1F* hnoise_strip_top = (TH1F*) inFile->Get("hnoise_strip_top") ;
   TH1F* hnoise_strip_bottom = (TH1F*) inFile->Get("hnoise_strip_bottom") ;
+  TH1F* hgain_strip = (TH1F*) inFile->Get("hgain_strip") ;
   TH1F* hgain_strip_top = (TH1F*) inFile->Get("hgain_strip_top") ;
   TH1F* hgain_strip_bottom = (TH1F*) inFile->Get("hgain_strip_bottom") ;
+  TH1F* hoffset_strip = (TH1F*) inFile->Get("hoffset_strip") ;
   TH1F* hoffset_strip_top = (TH1F*) inFile->Get("hoffset_strip_top") ;
   TH1F* hoffset_strip_bottom = (TH1F*) inFile->Get("hoffset_strip_bottom") ;
+  TH1F* hdacthr_strip = (TH1F*) inFile->Get("hdacthr_strip") ;
   TH1F* hdacthr_strip_top = (TH1F*) inFile->Get("hdacthr_strip_top") ;
   TH1F* hdacthr_strip_bottom = (TH1F*) inFile->Get("hdacthr_strip_bottom") ;
   // 2D histogram of noise VS gain
@@ -214,12 +218,16 @@ int DrawHists(string inFileName)
   }
 
   // making plots
+  makeLongerPlot(hnoise_strip, "Noise_Strip", "Hist") ;
   makeLongerPlot(hnoise_strip_top, "Noise_Strip_Top", "Hist") ;
   makeLongerPlot(hnoise_strip_bottom, "Noise_Strip_Bottom", "Hist") ;
   makeLongerPlot(hgain_strip_top, "Gain_Strip_Top", "Hist") ;
+  makeLongerPlot(hgain_strip, "Gain_Strip", "Hist") ;
   makeLongerPlot(hgain_strip_bottom, "Gain_Strip_Bottom", "Hist") ;
+  makeLongerPlot(hoffset_strip, "Offset_Strip", "Hist") ;
   makeLongerPlot(hoffset_strip_top, "Offset_Strip_Top", "Hist") ;
   makeLongerPlot(hoffset_strip_bottom, "Offset_Strip_Bottom", "Hist") ;
+  makeLongerPlot(hdacthr_strip, "DACThreshold_Strip", "Hist") ;
   makeLongerPlot(hdacthr_strip_top, "DACThreshold_Strip_Top", "Hist") ;
   makeLongerPlot(hdacthr_strip_bottom, "DACThreshold_Strip_Bottom", "Hist") ;
 
